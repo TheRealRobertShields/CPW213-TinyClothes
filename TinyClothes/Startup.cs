@@ -34,8 +34,10 @@ namespace TinyClothes
 
             // services.AddDbContext<StoreContext>(ConfigDbContext);
 
+            string connection = Configuration.GetConnectionString("ClothesDB");
+
             // Same as above using lambda notation
-            services.AddDbContext<StoreContext>(options => options.UseSqlServer("")); // <<< CONNECTION STRING GOES IN THE QUOTES!!!
+            services.AddDbContext<StoreContext>(options => options.UseSqlServer(connection)); // <<< CONNECTION STRING GOES IN THE QUOTES!!!
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
