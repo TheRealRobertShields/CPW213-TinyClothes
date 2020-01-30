@@ -53,6 +53,15 @@ namespace TinyClothes.Data
             return c;
         }
 
+        /// <summary>
+        /// Returns the total number of clothing items.
+        /// </summary>
+        public async static Task<int> GetNumClothing(StoreContext context)
+        {
+            return await context.Clothing.CountAsync();
 
+            // Alternative query syntax
+            //return await (from c in context.Clothing select c).CountAsync()
+        }
     }
 }
