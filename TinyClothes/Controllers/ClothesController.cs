@@ -23,15 +23,22 @@ namespace TinyClothes.Controllers
             // (coalescing operator) if page has value, use value, otherwise use 1
             // https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-coalescing-operator
             int pageNumber = page ?? 1;
+            ViewData["CurrentPage"] = pageNumber;
 
-            int numProducts = await ClothingDb.GetNumClothing(_context) / PageSize;
-
-            // round up always, no partial page number (2.1 pages = 3 pages)
-            int maxPage = Convert.ToInt32(Math.Ceiling((double)numProducts / PageSize));
+            int maxPage = await GetMaxPage(PageSize);
             ViewData["MaxPage"] = maxPage;
 
             List<Clothing> clothes = await ClothingDb.GetClothingByPage(_context, pageNum: pageNumber, pageSize: PageSize);
             return View(clothes);
+        }
+
+        private async Task<int> GetMaxPage(int PageSize)
+        {
+            int numProducts = await ClothingDb.GetNumClothing(_context) / PageSize;
+
+            // round up always, no partial page number (2.1 pages = 3 pages)
+            int maxPage = Convert.ToInt32(Math.Ceiling((double)numProducts / PageSize));
+            return maxPage;
         }
 
         [HttpGet]
