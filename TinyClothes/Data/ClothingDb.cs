@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,9 +12,33 @@ namespace TinyClothes.Data
     /// </summary>
     public static class ClothingDb
     {
-        public static List<Clothing> GetAllClothing()
+        /// <summary>
+        /// Returns a specific page of clothing items sorted by ItemId in ascending order
+        /// </summary>
+        /// <param name="context">The DB context </param>
+        /// <param name="pageNum">The page number</param>
+        /// <param name="pageSize">The number of clothing items per page</param>
+        public async static Task<List<Clothing>> GetClothingByPage(StoreContext context, int pageNum, int pageSize)
         {
-            throw new NotImplementedException();
+            // To get page 1, we wouldn't skip any rows, so we must offset by 1.
+            const int PageOffset = 1;
+
+            // LINQ Method Syntax
+            List<Clothing> clothes = await context.Clothing
+                .OrderBy(c => c.ItemId)     // OrderBy can go before Skip
+                .Skip(pageSize * (pageNum - PageOffset))    // Must Skip before Take
+                .Take(pageSize)
+                .ToListAsync();
+
+            return clothes;
+
+            // LINQ Query Syntax
+            List<Clothing> clothes2 = await (from c in context.Clothing
+                                             orderby c.ItemId ascending
+                                             select c)
+                                             .Skip(pageSize * (pageNum - PageOffset))    
+                                             .Take(pageSize)
+                                             .ToListAsync(); 
         }
 
         /// <summary>
@@ -28,6 +53,15 @@ namespace TinyClothes.Data
             return c;
         }
 
+        /// <summary>
+        /// Returns the total number of clothing items.
+        /// </summary>
+        public async static Task<int> GetNumClothing(StoreContext context)
+        {
+            return await context.Clothing.CountAsync();
 
+            // Alternative query syntax
+            //return await (from c in context.Clothing select c).CountAsync()
+        }
     }
 }
