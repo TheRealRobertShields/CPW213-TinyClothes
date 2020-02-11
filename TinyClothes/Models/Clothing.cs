@@ -30,6 +30,7 @@ namespace TinyClothes.Models
         /// Retail price of the item
         /// </summary>
         [Range(0.0, 10000.0)]
+        [DataType(DataType.Currency)]
         public double Price { get; set; }
 
         public string Title { get; set; }
