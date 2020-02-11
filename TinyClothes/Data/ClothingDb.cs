@@ -66,6 +66,14 @@ namespace TinyClothes.Data
             return c;
         }
 
+        public static async Task<Clothing> Edit(Clothing c, StoreContext context)
+        {
+            await context.AddAsync(c);  // add clothing to context
+            context.Entry(c).State = EntityState.Modified;  // mark it as modified
+            await context.SaveChangesAsync();   // update DB
+            return c;
+        }
+
         /// <summary>
         /// Returns the total number of clothing items.
         /// </summary>
