@@ -29,6 +29,7 @@ namespace TinyClothes.Models
         /// <summary>
         /// Retail price of the item
         /// </summary>
+        [Range(0.0, 10000.0)]
         public double Price { get; set; }
 
         public string Title { get; set; }
