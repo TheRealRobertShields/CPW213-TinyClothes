@@ -84,5 +84,17 @@ namespace TinyClothes.Data
             // Alternative query syntax
             //return await (from c in context.Clothing select c).CountAsync()
         }
+
+        public async static Task Delete(int id, StoreContext context)
+        {
+            Clothing c = await GetClothingById(id, context);
+            if (c != null)  // If the product was found, delete it
+            {
+                await context.AddAsync(c);
+                context.Entry(c).State = EntityState.Deleted;
+                await context.SaveChangesAsync();
+            }
+
+        }
     }
 }
