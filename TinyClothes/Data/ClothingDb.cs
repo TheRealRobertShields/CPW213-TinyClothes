@@ -90,11 +90,16 @@ namespace TinyClothes.Data
             Clothing c = await GetClothingById(id, context);
             if (c != null)  // If the product was found, delete it
             {
-                await context.AddAsync(c);
-                context.Entry(c).State = EntityState.Deleted;
-                await context.SaveChangesAsync();
+                await Delete(c, context);
             }
 
+        }
+
+        public async static Task Delete(Clothing c, StoreContext context)
+        {
+            await context.AddAsync(c);
+            context.Entry(c).State = EntityState.Deleted;
+            await context.SaveChangesAsync();
         }
     }
 }
