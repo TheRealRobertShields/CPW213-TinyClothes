@@ -84,5 +84,13 @@ namespace TinyClothes.Data
             // Alternative query syntax
             //return await (from c in context.Clothing select c).CountAsync()
         }
+
+
+        public async static Task Delete(Clothing c, StoreContext context)
+        {
+            await context.AddAsync(c);
+            context.Entry(c).State = EntityState.Deleted;
+            await context.SaveChangesAsync();
+        }
     }
 }

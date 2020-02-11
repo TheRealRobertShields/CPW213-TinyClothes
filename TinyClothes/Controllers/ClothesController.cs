@@ -86,5 +86,26 @@ namespace TinyClothes.Controllers
             }
             return View(c);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            Clothing c = await ClothingDb.GetClothingById(id, _context);
+            if (c == null) // If clothing does not exist
+            {
+                return NotFound();
+            }
+            return View(c);
+        }
+
+        [HttpPost]
+        [ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            Clothing c = await ClothingDb.GetClothingById(id, _context);
+            await ClothingDb.Delete(c, _context);
+            TempData["Message"] = $"{c.Title} Clothing deleted successfully";
+            return RedirectToAction(nameof(ShowAll));
+        }
     }
 }
