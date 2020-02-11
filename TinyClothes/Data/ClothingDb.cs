@@ -54,6 +54,27 @@ namespace TinyClothes.Data
         }
 
         /// <summary>
+        /// Returns a single clothing item or null if there is no match.
+        /// </summary>
+        /// <param name="id">id of the clothing item</param>
+        /// <param name="context">DB context</param>
+        public static async Task<Clothing> GetClothingById(int id, StoreContext context)
+        {
+            Clothing c = await (from clothing in context.Clothing
+                                where clothing.ItemId == id
+                                select clothing).SingleOrDefaultAsync();
+            return c;
+        }
+
+        public static async Task<Clothing> Edit(Clothing c, StoreContext context)
+        {
+            await context.AddAsync(c);  // add clothing to context
+            context.Entry(c).State = EntityState.Modified;  // mark it as modified
+            await context.SaveChangesAsync();   // update DB
+            return c;
+        }
+
+        /// <summary>
         /// Returns the total number of clothing items.
         /// </summary>
         public async static Task<int> GetNumClothing(StoreContext context)
