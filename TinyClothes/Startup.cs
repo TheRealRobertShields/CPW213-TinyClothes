@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TinyClothes.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace TinyClothes
 {
@@ -36,10 +37,14 @@ namespace TinyClothes
 
             string connection = Configuration.GetConnectionString("ClothesDB");
 
-            // Same as above using lambda notation
-            services.AddDbContext<StoreContext>(options => options.UseSqlServer(connection)); // <<< CONNECTION STRING GOES IN THE QUOTES!!!
+            // services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            // Same as above.
+            services.AddHttpContextAccessor();
 
-            // Add and configure session
+            // Same as above using lambda notation.
+            services.AddDbContext<StoreContext>(options => options.UseSqlServer(connection)); 
+
+            // Add and configure session.
             services.AddDistributedMemoryCache();
 
             services.AddSession(options =>
