@@ -11,9 +11,9 @@ namespace TinyClothes
     {
         public static async Task<bool> IsUsernameTaken(string username, StoreContext context)
         {
-            bool isTaken = await (from a in context.Accounts
-                                where username == a.Username
-                                select a).AnyAsync();
+            bool isTaken = await (from acc in context.Accounts
+                                where username == acc.Username
+                                select acc).AnyAsync();
             return isTaken;
         }
 
