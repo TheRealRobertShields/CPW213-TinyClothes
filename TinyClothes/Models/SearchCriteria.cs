@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,11 +20,15 @@ namespace TinyClothes.Models
         /// </summary>
         public string Type { get; set; }
         
-        
+        [StringLength(150)]
         public string Title { get; set; }
 
+        [Range(0.00, double.MaxValue, ErrorMessage = "Minimum price must be positive")]
+        [Display(Name = "Minimum Price")]
         public double? MinPrice { get; set; }
 
+        [Range(0.00, double.MaxValue, ErrorMessage = "Maximum price must be positive")]
+        [Display(Name = "Max Price")]
         public double? MaxPrice { get; set; }
 
         public List<Clothing> Results { get; set; }

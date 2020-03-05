@@ -111,48 +111,53 @@ namespace TinyClothes.Controllers
         [HttpGet]
         public async Task<IActionResult> Search(SearchCriteria search)
         {
-            // Prepare query - SELECT * FROM Clothes
-            // Does not get sent to DB
-            IQueryable<Clothing> allClothes = (from c in _context.Clothing
+            if (ModelState.IsValid)
+            {
+                // Prepare query - SELECT * FROM Clothes
+                // Does not get sent to DB
+                IQueryable<Clothing> allClothes = (from c in _context.Clothing
                                                select c);
 
-            if (search.MinPrice.HasValue)
-            {   // WHERE Price > MinPrice
-                allClothes = (from c in allClothes
-                              where c.Price >= search.MinPrice
-                              select c);
-            }
+                if (search.MinPrice.HasValue)
+                {   // WHERE Price > MinPrice
+                    allClothes = (from c in allClothes
+                                  where c.Price >= search.MinPrice
+                                  select c);
+                }
 
-            if (search.MaxPrice.HasValue)
-            {   // WHERE Price < MaxPrice
-                allClothes = (from c in allClothes
-                              where c.Price <= search.MaxPrice
-                              select c);
-            }
+                if (search.MaxPrice.HasValue)
+                {   // WHERE Price < MaxPrice
+                    allClothes = (from c in allClothes
+                                  where c.Price <= search.MaxPrice
+                                  select c);
+                }
 
-            if (!string.IsNullOrWhiteSpace(search.Size))
-            {   // WHERE Size matches
-                allClothes = (from c in allClothes
-                              where c.Size == search.Size
-                              select c);
-            }
+                if (!string.IsNullOrWhiteSpace(search.Size))
+                {   // WHERE Size matches
+                    allClothes = (from c in allClothes
+                                  where c.Size == search.Size
+                                  select c);
+                }
 
-            if (!string.IsNullOrWhiteSpace(search.Type))
-            {   // WHERE Type matches
-                allClothes = (from c in allClothes
-                              where c.Type == search.Type
-                              select c);
-            }
+                if (!string.IsNullOrWhiteSpace(search.Type))
+                {   // WHERE Type matches
+                    allClothes = (from c in allClothes
+                                  where c.Type == search.Type
+                                  select c);
+                }
 
-            if (!string.IsNullOrWhiteSpace(search.Title))
-            {   // WHERE Title is contained
-                allClothes = (from c in allClothes
-                              where c.Title.Contains(search.Title)
-                              select c);
-            }
+                if (!string.IsNullOrWhiteSpace(search.Title))
+                {   // WHERE Title is contained
+                    allClothes = (from c in allClothes
+                                  where c.Title.Contains(search.Title)
+                                  select c);
+                }
 
-            search.Results = allClothes.ToList();
+                search.Results = allClothes.ToList();
+                
+            }
             return View(search);
+
         }
     }
 }
