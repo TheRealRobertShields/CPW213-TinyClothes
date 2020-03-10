@@ -18,7 +18,7 @@ namespace TinyClothes.Data
         /// <param name="context">The DB context </param>
         /// <param name="pageNum">The page number</param>
         /// <param name="pageSize">The number of clothing items per page</param>
-        public async static Task<List<Clothing>> GetClothingByPage(StoreContext context, int pageNum, int pageSize)
+        public static async Task<List<Clothing>> GetClothingByPage(StoreContext context, int pageNum, int pageSize)
         {
             // To get page 1, we wouldn't skip any rows, so we must offset by 1.
             const int PageOffset = 1;
@@ -33,12 +33,12 @@ namespace TinyClothes.Data
             return clothes;
 
             // LINQ Query Syntax
-            List<Clothing> clothes2 = await (from c in context.Clothing
-                                             orderby c.ItemId ascending
-                                             select c)
-                                             .Skip(pageSize * (pageNum - PageOffset))    
-                                             .Take(pageSize)
-                                             .ToListAsync(); 
+            //List<Clothing> clothes2 = await (from c in context.Clothing
+            //                                 orderby c.ItemId ascending
+            //                                 select c)
+            //                                 .Skip(pageSize * (pageNum - PageOffset))    
+            //                                 .Take(pageSize)
+            //                                 .ToListAsync(); 
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace TinyClothes.Data
         /// <summary>
         /// Returns the total number of clothing items.
         /// </summary>
-        public async static Task<int> GetNumClothing(StoreContext context)
+        public static async Task<int> GetNumClothing(StoreContext context)
         {
             return await context.Clothing.CountAsync();
 
@@ -86,11 +86,57 @@ namespace TinyClothes.Data
         }
 
 
-        public async static Task Delete(Clothing c, StoreContext context)
+        public static async Task Delete(Clothing c, StoreContext context)
         {
             await context.AddAsync(c);
             context.Entry(c).State = EntityState.Deleted;
             await context.SaveChangesAsync();
+        }
+
+        public static async Task<SearchCriteria> BuildSearchQueryAsync(SearchCriteria search, StoreContext context)
+        {
+            // Prepare query - SELECT * FROM Clothes
+            // Does not get sent to DB
+            IQueryable<Clothing> allClothes = (from c in context.Clothing
+                                               select c);
+
+            if (search.MinPrice.HasValue)
+            {   // WHERE Price > MinPrice
+                allClothes = (from c in allClothes
+                              where c.Price >= search.MinPrice
+                              select c);
+            }
+
+            if (search.MaxPrice.HasValue)
+            {   // WHERE Price < MaxPrice
+                allClothes = (from c in allClothes
+                              where c.Price <= search.MaxPrice
+                              select c);
+            }
+
+            if (!string.IsNullOrWhiteSpace(search.Size))
+            {   // WHERE Size matches
+                allClothes = (from c in allClothes
+                              where c.Size == search.Size
+                              select c);
+            }
+
+            if (!string.IsNullOrWhiteSpace(search.Type))
+            {   // WHERE Type matches
+                allClothes = (from c in allClothes
+                              where c.Type == search.Type
+                              select c);
+            }
+
+            if (!string.IsNullOrWhiteSpace(search.Title))
+            {   // WHERE Title is contained
+                allClothes = (from c in allClothes
+                              where c.Title.Contains(search.Title)
+                              select c);
+            }
+
+            search.Results = await allClothes.ToListAsync();
+            return search;
         }
     }
 }

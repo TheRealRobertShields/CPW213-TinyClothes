@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http;
-@inject IHttpContextAccessor sessionInfo
+﻿@inject IHttpContextAccessor sessionInfo
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,9 +22,6 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex ">
                     <ul class="navbar-nav flex-grow-1 mr-auto">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
@@ -48,7 +44,7 @@
                         else // When user is logged in
                         {
                             <li class="nav-item">
-                                <a class="nav-item text-dark" asp-controller="Account" asp-action="Logout">Log Out</a>
+                                <a class="nav-item text-dark btn btn-danger" asp-controller="Account" asp-action="Logout">Log Out</a>
                             </li>
                         }
                     </ul>
