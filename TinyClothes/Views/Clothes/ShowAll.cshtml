@@ -18,7 +18,7 @@
 </p>
 
 @* Display Clothing Table*@
-@await Html.PartialAsync("_DisplayClothes", Model)  
+@await Html.PartialAsync("_DisplayClothes", Model)
 
 <ul class="pagination">
     @* Print page numbers *@
@@ -38,3 +38,24 @@
         }
     }
 </ul>
+
+@* sections do not work on partial views *@
+@section Scripts{
+    <script>
+        console.log("Add-to-cart script ready");
+        $("*[data-cart-button]").click(
+            function(event) {
+                event.preventDefault();
+                var currBtn = this; // The add-to-cart button that was clicked.
+                console.log(currBtn);
+
+                var itemId = $(currBtn).attr("data-cart-itemid");
+                console.log("Item ID: " + itemId);
+
+                $.post("/Cart/AddJS", { id : itemId }).done(
+                    function() {
+                        console.log("Cart item added");
+                    });
+            });
+    </script>
+}

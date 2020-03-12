@@ -62,9 +62,16 @@
                     string prevUrl = http.HttpContext.Request.Path;
                     prevUrl += http.HttpContext.Request.QueryString.Value;
                 }
-                <a class="btn btn-primary" asp-action="Add" asp-controller="Cart" asp-route-id="@item.ItemId" asp-route-prevUrl="@prevUrl">Add to cart</a>
+                <a class="btn btn-primary" 
+                   asp-action="Add" 
+                   asp-controller="Cart" 
+                   asp-route-id="@item.ItemId" 
+                   asp-route-prevUrl="@prevUrl" 
+                   data-cart-button
+                   data-cart-itemid="@item.ItemId">Add to cart</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
