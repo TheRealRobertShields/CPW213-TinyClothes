@@ -76,7 +76,9 @@ namespace TinyClothes
             app.UseAuthorization();
 
             // Allows session data to be accessed.
-            app.UseSession(); 
+            app.UseSession();
+
+            app.UseStatusCodePagesWithRedirects("/Home/CustomError?code={0}");
 
             app.UseEndpoints(endpoints =>
             {
